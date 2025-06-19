@@ -1,4 +1,4 @@
-import ButtonWithMenu from '@/ui/ButtonWithMenu';
+import NavButton from '@/ui/NavButton/NavButton';
 import {FormNavIconMap, type TFormNavIcon} from './FormNav.constants';
 
 type TProps = Readonly<{
@@ -13,6 +13,6 @@ export default function FormNavBarItem(props: TProps) {
 	} = props;
 
 	return (
-		<ButtonWithMenu label={name} icon={FormNavIconMap[icon as TFormNavIcon]} />
+		<NavButton label={name} icon={FormNavIconMap[icon as TFormNavIcon]} />
 	);
 }

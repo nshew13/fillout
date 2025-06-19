@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
 import FormNavBar from '@/ui/FormNav/FormNavBar';
+import PrelineScriptWrapper from '@/ui/PrelineScriptWrapper';
 
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
@@ -40,6 +41,7 @@ export default function FormBuilderLayout({
 			</main>
 			<FormNavBar />
 		</div>
+		<PrelineScriptWrapper />
 		</body>
 		</html>
 	);
