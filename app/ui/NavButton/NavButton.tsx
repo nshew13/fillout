@@ -1,10 +1,10 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React from 'react';
+import {Button} from '@mui/material';
 import NavButtonMenu from '@/ui/NavButton/NavButtonMenu';
-import {type IconProp} from '@fortawesome/fontawesome-svg-core';
 
 type TProps = Readonly<{
 	label: string;
-	icon: IconProp;
+	icon: React.ElementType;
 }>;
 
 export default function NavButton(props: TProps) {
@@ -13,14 +13,11 @@ export default function NavButton(props: TProps) {
 		icon,
 	} = props;
 
+	const iconElement = React.createElement(icon, {});
+
 	return (
-		<div
-			className="p-2 overflow-ellipsis border rounded group"
-		>
-			<div className="cursor-pointer inline">
-				<FontAwesomeIcon icon={icon} />
-				<span className="ml-1">{label}</span>
-			</div>
+		<div className="p-2 overflow-ellipsis">
+			<Button variant="outlined" startIcon={iconElement}>{label}</Button>
 			<NavButtonMenu />
 		</div>
 	);

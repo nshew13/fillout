@@ -1,10 +1,11 @@
-import { faCircleCheck, faFileLines } from '@fortawesome/free-regular-svg-icons'
-import { faCircleInfo  } from '@fortawesome/free-solid-svg-icons'
+import CircleCheckOutline from '@mui/icons-material/CheckCircleOutline';
+import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
+import ErrorOutline from '@mui/icons-material/ErrorOutline';
 
 export const FormNavIconMap = {
-	'check': faCircleCheck,
-	'info': faCircleInfo,
-	'page': faFileLines,
+	'check': CircleCheckOutline,
+	'info': ErrorOutline,
+	'page': DescriptionOutlined,
 } as const;
 
 export type TFormNavIcon = keyof typeof FormNavIconMap;

@@ -4,10 +4,6 @@ import './globals.css';
 import FormNavBar from '@/ui/FormNav/FormNavBar';
 import PrelineScriptWrapper from '@/ui/PrelineScriptWrapper';
 
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
-config.autoAddCss = false
-
 const geistSans = Geist({
 	variable: '--font-geist-sans',
 	subsets: ['latin'],

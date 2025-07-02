@@ -1,6 +1,4 @@
 import {useState} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons';
 
 export default function NavButtonMenu() {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -16,7 +14,7 @@ export default function NavButtonMenu() {
 						e.stopPropagation();
 					}}
 				>
-					<FontAwesomeIcon icon={faEllipsisVertical} />
+					&hellip;
 				</div>
 
 				<div
