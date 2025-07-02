@@ -1,7 +1,6 @@
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
-import FormNavBar from '@/ui/FormNav/FormNavBar';
 import PrelineScriptWrapper from '@/ui/PrelineScriptWrapper';
 
 const geistSans = Geist({
@@ -32,10 +31,7 @@ export default function FormBuilderLayout({
 			className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 		>
 		<div className="w-screen h-screen flex flex-col justify-stretch items-center">
-			<main className="flex-[1_0_0]">
-				{children}
-			</main>
-			<FormNavBar />
+			{children}
 		</div>
 		<PrelineScriptWrapper />
 		</body>

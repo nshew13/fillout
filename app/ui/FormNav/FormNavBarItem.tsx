@@ -1,18 +1,43 @@
-import NavButton from '@/ui/NavButton/NavButton';
+import React, {Context, useContext} from 'react';
+import {Button} from '@mui/material';
 import {FormNavIconMap, type TFormNavIcon} from './FormNav.constants';
+import {FormPageContext, IFormPageContext} from '@/context/FormPageContext';
+import NavButtonMenu from '@/ui/NavButton/NavButtonMenu';
+import {type INavItem} from '@/types/INavItem';
 
 type TProps = Readonly<{
-	icon?: TFormNavIcon;
-	name: string;
+	item: INavItem;
 }>;
 
 export default function FormNavBarItem(props: TProps) {
 	const {
-		icon = 'page',
-		name,
+		item,
 	} = props;
 
+	if (!item) {
+		console.warn('No item specified for FormNavBarItem', props);
+		return null;
+	}
+
+	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
+	const iconElement = React.createElement(FormNavIconMap[item.icon as TFormNavIcon], {});
+
+	const selectPage = (event: React.MouseEvent) => {
+		event.stopPropagation();
+		formContext?.updateNavItem(item)
+	};
+
 	return (
-		<NavButton label={name} icon={FormNavIconMap[icon as TFormNavIcon]} />
+		<div className="p-2 overflow-ellipsis">
+			<Button
+				variant="outlined"
+				color={item.name === formContext?.navItem?.name ? 'primary' : 'secondary'}
+				startIcon={iconElement}
+				onClick={selectPage}
+			>
+				{item.name}
+			</Button>
+			<NavButtonMenu />
+		</div>
 	);
 }

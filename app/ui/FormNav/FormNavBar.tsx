@@ -1,21 +1,12 @@
-'use client';
-
 import {useState} from 'react';
-import {ItemInterface, ReactSortable} from 'react-sortablejs';
+import {ReactSortable} from 'react-sortablejs';
 import FormNavBarItem from '@/ui/FormNav/FormNavBarItem';
 import FragmentSortable from '@/ui/FragmentSortable';
 import NavButtonSpacer from '@/ui/NavButton/NavButtonSpacer';
-import type {TFormNavIcon} from '@/ui/FormNav/FormNav.constants';
-
-interface INavItem extends ItemInterface {
-	name: string;
-	icon?: TFormNavIcon;
-}
+import type {INavItem} from '@/types/INavItem';
 
 
-type TProps = Readonly<{}>;
-
-export default function FormNavBar(props: TProps) {
+export default function FormNavBar() {
 	const [state, setState] = useState<INavItem[]>([
 		// `filtered` and `draggable` aren't working, so just hard-code the end pieces
 		// {id: 0, name: 'Info', icon: 'info', filtered: true},
@@ -24,19 +15,23 @@ export default function FormNavBar(props: TProps) {
 		// {id: 4, name: 'Ending', icon: 'check', filtered: true},
 	]);
 
+	const navItemInfo: INavItem = {id: 0, name: 'Info', icon: 'info', filtered: true};
+	const navItemEnd: INavItem = {id: state.length, name: 'Ending', icon: 'check', filtered: true};
+
+
 	return (
 		<div className="flex justify-self-start">
-			<FormNavBarItem name="Info" icon="info" />
+			<FormNavBarItem item={navItemInfo} />
 			<NavButtonSpacer />
 			<ReactSortable list={state} setList={setState} className="flex justify-self-start">
 				{state.map((item) => (
 					<FragmentSortable key={item.id}>
-						<FormNavBarItem name={item.name} icon={item?.icon ?? 'page'} />
+						<FormNavBarItem item={item} />
 						<NavButtonSpacer />
 					</FragmentSortable>
 				))}
 			</ReactSortable>
-			<FormNavBarItem name="Ending" icon="check" />
+			<FormNavBarItem item={navItemEnd} />
 		</div>
 	);
 };
