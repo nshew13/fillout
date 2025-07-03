@@ -17,7 +17,7 @@ export default function FormNavBar() {
 	const pages = formContext?.formPages ?? [];
 
 	return (
-		<div className="flex justify-self-start">
+		<div className="flex justify-self-start max-w-8/10 overflow-x-auto pb-4">
 			<ReactSortable list={pages} setList={reorderPages} className="flex justify-self-start">
 				{pages.map((item) => (
 					<FragmentSortable key={item.id}>

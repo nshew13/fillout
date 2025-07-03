@@ -35,7 +35,7 @@ export default function FormNavBarItem (props: TProps) {
 			variant="outlined"
 			onClick={selectPage}
 		>
-			<span className="overflow-ellipsis">
+			<span className="overflow-ellipsis whitespace-nowrap">
 				{item.name}
 			</span>
 			{ isActiveItem && <span className="ml-2"><NavButtonMenu item={item} /></span> }
