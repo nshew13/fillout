@@ -38,7 +38,7 @@ export default function FormNavBarItem (props: TProps) {
 			<span className="overflow-ellipsis">
 				{item.name}
 			</span>
-			{ isActiveItem && <span className="ml-2"><NavButtonMenu /></span> }
+			{ isActiveItem && <span className="ml-2"><NavButtonMenu item={item} /></span> }
 		</Button>
 	);
 }

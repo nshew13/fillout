@@ -5,6 +5,7 @@ export interface IFormPageContext {
 	activeNavItemID: INavItem['id'];
 	formPages: INavItem[];
 	addPage: (afterID: INavItem['id']) => void;
+	deletePage: (id: INavItem['id']) => void;
 	updateActivePage: (id: INavItem['id']) => void;
 	updatePages: (pages: INavItem[]) => void;
 }
@@ -55,7 +56,7 @@ export function FormPageProvider(props: TProps) {
 		// find ID's index
 		const afterIndex = formPages.findIndex((page) => page.id === afterID);
 		if (afterIndex !== -1) {
-			// This is an easy  clone for our simple objects
+			// Create a copy, since splice edits in place
 			const modifiedPages = JSON.parse(JSON.stringify(formPages));
 			modifiedPages.splice(afterIndex + 1, 0, {
 				id: formPages.length, // FIXME: This won't work if/after deleting pages
@@ -69,6 +70,23 @@ export function FormPageProvider(props: TProps) {
 		}
 	};
 
+	const deletePage = (id: INavItem['id']) => {
+		// find ID's index
+		const pageIndex = formPages.findIndex((page) => page.id === id);
+
+		// only allow removal of "Pages"
+		if (
+			pageIndex > 0 && // disallow removal of "Info"
+			pageIndex < formPages.length - 1 // disallow removal of "Ending"
+		) {
+			// Create a copy, since splice edits in place
+			const modifiedPages = JSON.parse(JSON.stringify(formPages));
+			modifiedPages.splice(pageIndex, 1);
+
+			setFormPages(modifiedPages);
+		}
+	};
+
 	const updatePages = (pages: IFormPageContext['formPages']) => {
 		// TODO: check that name is unique
 		setFormPages(pages);
@@ -79,6 +97,7 @@ export function FormPageProvider(props: TProps) {
 			activeNavItemID,
 			formPages,
 			addPage,
+			deletePage,
 			updateActivePage,
 			updatePages,
 		}),

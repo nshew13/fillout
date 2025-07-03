@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Context, useContext, useState} from 'react';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -12,14 +12,21 @@ import {FormPageMenuItems, type TFormPageMenuItemKey} from '@/ui/NavButton/NavBu
 import styled from '@emotion/styled';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import MoreVert from '@mui/icons-material/MoreVert';
+import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
+import type {INavItem} from '@/types/INavItem';
+
+
+type TProps = Readonly<{
+	item: INavItem;
+}>;
 
 
 const StyledListHeader = styled(ListSubheader)({
 	backgroundImage: 'var(--Paper-overlay)',
 });
 
-
-export default function NavButtonMenu () {
+export default function NavButtonMenu (props: TProps) {
+	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const isOpen = Boolean(anchorEl);
 
@@ -53,20 +60,21 @@ export default function NavButtonMenu () {
 					<Divider />
 
 					{menuItemKeys.map((key) => {
-						const item = FormPageMenuItems[key as TFormPageMenuItemKey];
+						const menuItem = FormPageMenuItems[key as TFormPageMenuItemKey];
 
 						return (
 							<NavButtonMenuItem
+								key={menuItem.order}
 								closeMenu={(event: React.MouseEvent) => handleClose(event, key as TFormPageMenuItemKey)}
-								icon={item.icon}
-								label={item.label}
+								icon={menuItem.icon}
+								label={menuItem.label}
 							/>
 						);
 					})}
 
 					<Divider />
 
-					<MenuItem>
+					<MenuItem onClick={() => {formContext.deletePage(props.item.id)}}>
 						<ListItemIcon>
 							<DeleteOutline fontSize="small" className="text-red-600" />
 						</ListItemIcon>
