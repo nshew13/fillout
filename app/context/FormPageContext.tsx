@@ -37,7 +37,7 @@ export function FormPageProvider(props: TProps) {
 				if (page?.name) {
 					const matches = RE_PAGE_AUTO_NAME.exec(page.name);
 					if(matches) {
-						highestAutoNumber = Math.max(parseInt(matches[1]));
+						highestAutoNumber = Math.max(parseInt(matches[1], 10), highestAutoNumber);
 					}
 				}
 			});
@@ -60,7 +60,7 @@ export function FormPageProvider(props: TProps) {
 				 * Update the name and ID. Without form page content,
 				 * this is no different from a "blank" page.
 				 */
-				newPage = navItem;
+				newPage = JSON.parse(JSON.stringify(navItem));
 				newPage.name = lastAutoName;
 				newPage.id = formPages.length; // FIXME: This won't work if/after deleting pages
 			} else {

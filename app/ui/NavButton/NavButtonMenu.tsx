@@ -66,7 +66,6 @@ export default function NavButtonMenu (props: TProps) {
 
 	const menuOpen = (event: React.MouseEvent) => {
 		event.stopPropagation();
-		console.log('show menu');
 		setAnchorEl(event.currentTarget as HTMLElement);
 	};
 
