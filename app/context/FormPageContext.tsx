@@ -4,6 +4,7 @@ import {type INavItem} from '@/types/INavItem';
 export interface IFormPageContext {
 	activeNavItemID: INavItem['id'];
 	formPages: INavItem[];
+	addPage: (afterID: INavItem['id']) => void;
 	updateActivePage: (id: INavItem['id']) => void;
 	updatePages: (pages: INavItem[]) => void;
 }
@@ -40,7 +41,7 @@ export function FormPageProvider(props: TProps) {
 				}
 			});
 
-			return `Page ${highestAutoNumber}`;
+			return `Page ${highestAutoNumber + 1}`;
 		},
 		[formPages],
 	);
@@ -52,11 +53,11 @@ export function FormPageProvider(props: TProps) {
 
 	const addPage = (afterID: INavItem['id']) => {
 		// find ID's index
-		const afterIndex = formPages.find((page) => page.id === afterID);
-		if (afterIndex) {
+		const afterIndex = formPages.findIndex((page) => page.id === afterID);
+		if (afterIndex !== -1) {
 			// This is an easy  clone for our simple objects
 			const modifiedPages = JSON.parse(JSON.stringify(formPages));
-			modifiedPages.splice(afterIndex, 0, {
+			modifiedPages.splice(afterIndex + 1, 0, {
 				id: formPages.length, // FIXME: This won't work if/after deleting pages
 				name: lastAutoName,
 				icon: 'page',
@@ -77,6 +78,7 @@ export function FormPageProvider(props: TProps) {
 		() => ({
 			activeNavItemID,
 			formPages,
+			addPage,
 			updateActivePage,
 			updatePages,
 		}),

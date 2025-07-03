@@ -1,10 +1,18 @@
 import AddBoxOutlined from '@mui/icons-material/AddBoxOutlined';
+import React, {Context, useContext} from 'react';
+import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
+import {type INavItem} from '@/types/INavItem';
 
-type TProps = Readonly<{}>;
+type TProps = Readonly<{
+	afterID: INavItem['id'];
+}>;
 
-export default function NavButtonSpacer(props: TProps) {
-	const addPage = () => {
-		console.log('TODO: add page');
+export default function NavButtonSpacer (props: TProps) {
+	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
+
+	const addPage = (event: React.MouseEvent) => {
+		event.stopPropagation();
+		formContext?.addPage(props.afterID);
 	};
 
 	return (

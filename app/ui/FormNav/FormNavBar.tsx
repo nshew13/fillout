@@ -22,7 +22,7 @@ export default function FormNavBar() {
 				{pages.map((item) => (
 					<FragmentSortable key={item.id}>
 						<FormNavBarItem item={item} />
-						<NavButtonSpacer />
+						<NavButtonSpacer afterID={item.id} />
 					</FragmentSortable>
 				))}
 			</ReactSortable>
