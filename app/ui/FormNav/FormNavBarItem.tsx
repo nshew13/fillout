@@ -21,6 +21,7 @@ export default function FormNavBarItem(props: TProps) {
 
 	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
 	const iconElement = React.createElement(FormNavIconMap[item.icon as TFormNavIcon], {});
+	const isActiveItem =  item.name === formContext?.navItem?.name;
 
 	const selectPage = (event: React.MouseEvent) => {
 		event.stopPropagation();
@@ -28,16 +29,16 @@ export default function FormNavBarItem(props: TProps) {
 	};
 
 	return (
-		<div className="p-2 overflow-ellipsis">
-			<Button
-				variant="outlined"
-				color={item.name === formContext?.navItem?.name ? 'primary' : 'secondary'}
-				startIcon={iconElement}
-				onClick={selectPage}
-			>
+		<Button
+			color={isActiveItem ? 'primary' : 'secondary'}
+			startIcon={iconElement}
+			variant="outlined"
+			onClick={selectPage}
+		>
+			<span className="overflow-ellipsis">
 				{item.name}
-			</Button>
-			<NavButtonMenu />
-		</div>
+			</span>
+			{ isActiveItem && <span className="ml-2"><NavButtonMenu /></span> }
+		</Button>
 	);
 }
