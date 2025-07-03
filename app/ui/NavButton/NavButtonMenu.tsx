@@ -7,17 +7,19 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import NavButtonMenuItem from '@/ui/NavButton/NavButtonMenuItem';
-import {FormPageMenuItems, type TFormPageMenuItemKey} from '@/ui/NavButton/NavButtonMenu.constants';
+import type {IFormPage} from '@/types/IFormPage';
+import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
 
 import styled from '@emotion/styled';
+import CircleCheckOutline from '@mui/icons-material/CheckCircleOutline';
+import ContentPaste from '@mui/icons-material/ContentPaste';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import FileCopyOutlined from '@mui/icons-material/FileCopyOutlined';
+import IconNavMenuFlag from '@/ui/NavButton/IconNavMenuFlag';
 import MoreVert from '@mui/icons-material/MoreVert';
-import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
-import type {INavItem} from '@/types/INavItem';
-
 
 type TProps = Readonly<{
-	item: INavItem;
+	item: IFormPage;
 }>;
 
 
@@ -26,23 +28,47 @@ const StyledListHeader = styled(ListSubheader)({
 });
 
 export default function NavButtonMenu (props: TProps) {
+	const {
+		item,
+	} = props;
+
 	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const isOpen = Boolean(anchorEl);
+
+	const actionDuplicate = (item: IFormPage) => {
+		formContext.addPage(item.id, item);
+	}
+
+	const actionRename = (item: IFormPage, newName: string = 'New name') => {
+		const pageIndex = formContext.formPages.findIndex((page) => page.id === item.id);
+
+		// Create a copy, since splice edits in place
+		const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
+		modifiedPages[pageIndex].name = newName; // TODO: allow input
+		formContext.updatePages(modifiedPages);
+	}
+
+	const actionSetAsFirst = (item: IFormPage) => {
+		const pageIndex = formContext.formPages.findIndex((page) => page.id === item.id);
+
+		// Create a copy, since splice edits in place
+		const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
+
+		modifiedPages.splice(pageIndex, 1);
+		modifiedPages.splice(1, 0, item);
+		formContext.updatePages(modifiedPages);
+	}
+
+	const handleClose = (event: React.MouseEvent) => {
+		setAnchorEl(null);
+	};
 
 	const menuOpen = (event: React.MouseEvent) => {
 		event.stopPropagation();
 		console.log('show menu');
 		setAnchorEl(event.currentTarget as HTMLElement);
 	};
-
-	const handleClose = (event: React.MouseEvent, key?: TFormPageMenuItemKey) => {
-		console.log('TODO: action for', key);
-		setAnchorEl(null);
-	};
-
-	// TODO: Sort by order prop, but for now, we'll let it use object key order
-	const menuItemKeys = Object.keys(FormPageMenuItems);
 
 	return (
 		<>
@@ -52,29 +78,41 @@ export default function NavButtonMenu (props: TProps) {
 				sx={{ width: 320, maxWidth: '100%' }}
 				open={isOpen}
 				anchorEl={anchorEl}
-				onClose={(event: React.MouseEvent) => handleClose(event)}
+				onClose={handleClose}
 			>
 				<MenuList>
 					<StyledListHeader>Settings</StyledListHeader>
 
 					<Divider />
 
-					{menuItemKeys.map((key) => {
-						const menuItem = FormPageMenuItems[key as TFormPageMenuItemKey];
+					<NavButtonMenuItem
+						onClick={() => actionSetAsFirst(item)}
+						icon={IconNavMenuFlag}
+						label="Set as first page"
+					/>
 
-						return (
-							<NavButtonMenuItem
-								key={menuItem.order}
-								closeMenu={(event: React.MouseEvent) => handleClose(event, key as TFormPageMenuItemKey)}
-								icon={menuItem.icon}
-								label={menuItem.label}
-							/>
-						);
-					})}
+					<NavButtonMenuItem
+						onClick={() => actionRename(item)}
+						icon={CircleCheckOutline}
+						label="Rename"
+					/>
+
+					{/* I'm not sure what "copy" does without paste, so for now, it is the same as Duplicate */}
+					<NavButtonMenuItem
+						onClick={() => actionDuplicate(item)}
+						icon={ContentPaste}
+						label="Copy"
+					/>
+
+					<NavButtonMenuItem
+						onClick={() => actionDuplicate(item)}
+						icon={FileCopyOutlined}
+						label="Duplicate"
+					/>
 
 					<Divider />
 
-					<MenuItem onClick={() => {formContext.deletePage(props.item.id)}}>
+					<MenuItem onClick={() => {formContext.deletePage(item.id)}}>
 						<ListItemIcon>
 							<DeleteOutline fontSize="small" className="text-red-600" />
 						</ListItemIcon>

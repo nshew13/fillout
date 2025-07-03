@@ -3,10 +3,10 @@ import {Button} from '@mui/material';
 import {FormNavIconMap, type TFormNavIcon} from './FormNav.constants';
 import {FormPageContext, IFormPageContext} from '@/context/FormPageContext';
 import NavButtonMenu from '@/ui/NavButton/NavButtonMenu';
-import {type INavItem} from '@/types/INavItem';
+import {type IFormPage} from '@/types/IFormPage';
 
 type TProps = Readonly<{
-	item: INavItem;
+	item: IFormPage;
 }>;
 
 export default function FormNavBarItem (props: TProps) {

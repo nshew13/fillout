@@ -1,13 +1,13 @@
 import React, {createContext, useMemo, useState} from 'react';
-import {type INavItem} from '@/types/INavItem';
+import {type IFormPage} from '@/types/IFormPage';
 
 export interface IFormPageContext {
-	activeNavItemID: INavItem['id'];
-	formPages: INavItem[];
-	addPage: (afterID: INavItem['id']) => void;
-	deletePage: (id: INavItem['id']) => void;
-	updateActivePage: (id: INavItem['id']) => void;
-	updatePages: (pages: INavItem[]) => void;
+	activeNavItemID: IFormPage['id'];
+	formPages: IFormPage[];
+	addPage: (afterID: IFormPage['id'], navItem?: IFormPage) => void;
+	deletePage: (id: IFormPage['id']) => void;
+	updateActivePage: (id: IFormPage['id']) => void;
+	updatePages: (pages: IFormPage[]) => void;
 }
 
 type TProps = Readonly<{
@@ -33,7 +33,7 @@ export function FormPageProvider(props: TProps) {
 			console.log('calculating lastAutoName');
 			let highestAutoNumber = 0;
 
-			formPages.forEach((page: INavItem) => {
+			formPages.forEach((page: IFormPage) => {
 				if (page?.name) {
 					const matches = RE_PAGE_AUTO_NAME.exec(page.name);
 					if(matches) {
@@ -47,30 +47,38 @@ export function FormPageProvider(props: TProps) {
 		[formPages],
 	);
 
-	const updateActivePage = (id: IFormPageContext['activeNavItemID']) => {
-		console.log(`setActiveNavItemID(${id})`);
-		setActiveNavItemID(id);
-	};
-
-	const addPage = (afterID: INavItem['id']) => {
+	const addPage = (afterID: IFormPage['id'], navItem?: IFormPage) => {
 		// find ID's index
 		const afterIndex = formPages.findIndex((page) => page.id === afterID);
 		if (afterIndex !== -1) {
 			// Create a copy, since splice edits in place
 			const modifiedPages = JSON.parse(JSON.stringify(formPages));
-			modifiedPages.splice(afterIndex + 1, 0, {
-				id: formPages.length, // FIXME: This won't work if/after deleting pages
-				name: lastAutoName,
-				icon: 'page',
-			} as INavItem);
 
+			let newPage: IFormPage;
+			if (navItem) {
+				/*
+				 * Update the name and ID. Without form page content,
+				 * this is no different from a "blank" page.
+				 */
+				newPage = navItem;
+				newPage.name = lastAutoName;
+				newPage.id = formPages.length; // FIXME: This won't work if/after deleting pages
+			} else {
+				newPage = {
+					id: formPages.length, // FIXME: This won't work if/after deleting pages
+					name: lastAutoName,
+					icon: 'page',
+				};
+			}
+
+			modifiedPages.splice(afterIndex + 1, 0, newPage);
 			setFormPages(modifiedPages);
 		} else {
 			throw new Error(`Page with ID ${afterID} does not exist`);
 		}
 	};
 
-	const deletePage = (id: INavItem['id']) => {
+	const deletePage = (id: IFormPage['id']) => {
 		// find ID's index
 		const pageIndex = formPages.findIndex((page) => page.id === id);
 
@@ -85,6 +93,11 @@ export function FormPageProvider(props: TProps) {
 
 			setFormPages(modifiedPages);
 		}
+	};
+
+	const updateActivePage = (id: IFormPageContext['activeNavItemID']) => {
+		console.log(`setActiveNavItemID(${id})`);
+		setActiveNavItemID(id);
 	};
 
 	const updatePages = (pages: IFormPageContext['formPages']) => {

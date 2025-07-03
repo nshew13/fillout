@@ -1,10 +1,10 @@
 import AddBoxOutlined from '@mui/icons-material/AddBoxOutlined';
 import React, {Context, useContext} from 'react';
 import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
-import {type INavItem} from '@/types/INavItem';
+import {type IFormPage} from '@/types/IFormPage';
 
 type TProps = Readonly<{
-	afterID: INavItem['id'];
+	afterID: IFormPage['id'];
 }>;
 
 export default function NavButtonSpacer (props: TProps) {

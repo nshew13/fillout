@@ -4,13 +4,13 @@ import FormNavBarItem from '@/ui/FormNav/FormNavBarItem';
 import FragmentSortable from '@/ui/FragmentSortable';
 import NavButtonSpacer from '@/ui/NavButton/NavButtonSpacer';
 import {FormPageContext, IFormPageContext} from '@/context/FormPageContext';
-import {type INavItem} from '@/types/INavItem';
+import {type IFormPage} from '@/types/IFormPage';
 
 
 export default function FormNavBar() {
 	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
 
-	const reorderPages = (reorderedPages: INavItem[]) => {
+	const reorderPages = (reorderedPages: IFormPage[]) => {
 		formContext.updatePages(reorderedPages);
 	};
 
