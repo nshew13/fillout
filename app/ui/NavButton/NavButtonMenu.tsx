@@ -8,8 +8,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import NavButtonMenuItem from '@/ui/NavButton/NavButtonMenuItem';
-import type {IFormPage} from '@/types/IFormPage';
+import NavButtonMenuRenameDialog from '@/ui/NavButton/NavButtonMenuRenameDialog';
 import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
+import type {IFormPage} from '@/types/IFormPage';
 
 import styled from '@emotion/styled';
 import MuiIconContentPaste from '@mui/icons-material/ContentPaste';
@@ -34,22 +35,42 @@ export default function NavButtonMenu (props: TProps) {
 
 	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const isOpen = Boolean(anchorEl);
+	const [dialogIsOpen, setDialogIsOpen] = useState(false);
+	const menuIsOpen = Boolean(anchorEl);
 
-	const actionDuplicate = (item: IFormPage) => {
+	const handleRenameDialogClose = (newName: string) => {
+		setDialogIsOpen(false);
+
+		if (newName) {
+			const pageIndex = formContext.getPageIndex(item.id);
+
+			// Create a copy, since splice edits in place
+			const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
+			modifiedPages[pageIndex].name = newName;
+			formContext.updatePages(modifiedPages);
+		} else {
+			console.warn('Invalid name:', newName);
+		}
+	};
+
+	const handleMenuClose = () => {
+		setAnchorEl(null);
+	};
+
+	const actionDelete = () => {
+		formContext.deletePage(item.id);
+	}
+
+	const actionDuplicate = () => {
 		formContext.addPage(item.id, item);
 	}
 
-	const actionRename = (item: IFormPage, newName: string = 'New name') => {
-		const pageIndex = formContext.getPageIndex(item.id);
-
-		// Create a copy, since splice edits in place
-		const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
-		modifiedPages[pageIndex].name = newName; // TODO: allow input
-		formContext.updatePages(modifiedPages);
+	const actionRename = () => {
+		setDialogIsOpen(true);
+		handleMenuClose();
 	}
 
-	const actionSetAsFirst = (item: IFormPage) => {
+	const actionSetAsFirst = () => {
 		const pageIndex = formContext.getPageIndex(item.id);
 
 		// Create a copy, since splice edits in place
@@ -60,10 +81,6 @@ export default function NavButtonMenu (props: TProps) {
 		formContext.updatePages(modifiedPages);
 	}
 
-	const handleClose = (event: React.MouseEvent) => {
-		setAnchorEl(null);
-	};
-
 	const menuOpen = (event: React.MouseEvent) => {
 		event.stopPropagation();
 		setAnchorEl(event.currentTarget as HTMLElement);
@@ -73,11 +90,17 @@ export default function NavButtonMenu (props: TProps) {
 		<>
 			<MuiIconMoreVert className="hs-tooltip [--trigger:click] inline-block" onClick={menuOpen} />
 
+			<NavButtonMenuRenameDialog
+				item={item}
+				onClose={handleRenameDialogClose}
+				showDialog={dialogIsOpen}
+			/>
+
 			<Menu
 				sx={{ width: 320, maxWidth: '100%' }}
-				open={isOpen}
+				open={menuIsOpen}
 				anchorEl={anchorEl}
-				onClose={handleClose}
+				onClose={handleMenuClose}
 			>
 				<MenuList>
 					<StyledListHeader>Settings</StyledListHeader>
@@ -85,33 +108,33 @@ export default function NavButtonMenu (props: TProps) {
 					<Divider />
 
 					<NavButtonMenuItem
-						onClick={() => actionSetAsFirst(item)}
+						onClick={actionSetAsFirst}
 						icon={IconNavMenuFlag}
 						label="Set as first page"
 					/>
 
 					<NavButtonMenuItem
-						onClick={() => actionRename(item)}
+						onClick={actionRename}
 						icon={MuiIconDriveFileRenameOutline}
 						label="Rename"
 					/>
 
 					{/* I'm not sure what "copy" does without paste, so for now, it is the same as Duplicate */}
 					<NavButtonMenuItem
-						onClick={() => actionDuplicate(item)}
+						onClick={actionDuplicate}
 						icon={MuiIconContentPaste}
 						label="Copy"
 					/>
 
 					<NavButtonMenuItem
-						onClick={() => actionDuplicate(item)}
+						onClick={actionDuplicate}
 						icon={MuiIconFileCopyOutlined}
 						label="Duplicate"
 					/>
 
 					<Divider />
 
-					<MenuItem onClick={() => {formContext.deletePage(item.id)}}>
+					<MenuItem onClick={actionDelete}>
 						<ListItemIcon>
 							<MuiIconDeleteOutline fontSize="small" className="text-red-600" />
 						</ListItemIcon>
