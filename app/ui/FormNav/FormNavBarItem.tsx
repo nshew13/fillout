@@ -9,7 +9,7 @@ type TProps = Readonly<{
 	item: INavItem;
 }>;
 
-export default function FormNavBarItem(props: TProps) {
+export default function FormNavBarItem (props: TProps) {
 	const {
 		item,
 	} = props;
@@ -21,11 +21,11 @@ export default function FormNavBarItem(props: TProps) {
 
 	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
 	const iconElement = React.createElement(FormNavIconMap[item.icon as TFormNavIcon], {});
-	const isActiveItem =  item.name === formContext?.navItem?.name;
+	const isActiveItem =  item.id === formContext?.activeNavItemID;
 
 	const selectPage = (event: React.MouseEvent) => {
 		event.stopPropagation();
-		formContext?.updateNavItem(item)
+		formContext?.updateActivePage(item.id)
 	};
 
 	return (

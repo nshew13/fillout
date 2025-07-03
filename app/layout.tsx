@@ -30,7 +30,7 @@ export default function FormBuilderLayout({
 		<body
 			className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 		>
-		<div className="w-screen h-screen flex flex-col justify-stretch items-center">
+		<div className="w-screen h-screen flex flex-col justify-stretch items-center p-6">
 			{children}
 		</div>
 		<PrelineScriptWrapper />
