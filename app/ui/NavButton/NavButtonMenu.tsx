@@ -41,7 +41,7 @@ export default function NavButtonMenu (props: TProps) {
 	}
 
 	const actionRename = (item: IFormPage, newName: string = 'New name') => {
-		const pageIndex = formContext.formPages.findIndex((page) => page.id === item.id);
+		const pageIndex = formContext.getPageIndex(item.id);
 
 		// Create a copy, since splice edits in place
 		const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
@@ -50,7 +50,7 @@ export default function NavButtonMenu (props: TProps) {
 	}
 
 	const actionSetAsFirst = (item: IFormPage) => {
-		const pageIndex = formContext.formPages.findIndex((page) => page.id === item.id);
+		const pageIndex = formContext.getPageIndex(item.id);
 
 		// Create a copy, since splice edits in place
 		const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));

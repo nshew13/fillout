@@ -6,6 +6,8 @@ export interface IFormPageContext {
 	formPages: IFormPage[];
 	addPage: (afterID: IFormPage['id'], navItem?: IFormPage) => void;
 	deletePage: (id: IFormPage['id']) => void;
+	getActivePage: () => IFormPage;
+	getPageIndex: (id: IFormPage['id']) => number;
 	updateActivePage: (id: IFormPage['id']) => void;
 	updatePages: (pages: IFormPage[]) => void;
 }
@@ -27,6 +29,14 @@ export function FormPageProvider(props: TProps) {
 	]);
 	const [activeNavItemID, setActiveNavItemID] = useState<IFormPageContext['activeNavItemID']>(0);
 
+	const getPageIndex = (id: IFormPage['id']) => {
+		return formPages.findIndex((page) => page.id === id);
+	}
+
+	const getActivePage = () => {
+		return formPages[getPageIndex(activeNavItemID)];
+	}
+
 	// holds the last "Page #" for inserting a new page
 	const lastAutoName = useMemo(
 		() => {
@@ -47,8 +57,8 @@ export function FormPageProvider(props: TProps) {
 	);
 
 	const addPage = (afterID: IFormPage['id'], navItem?: IFormPage) => {
-		// find ID's index
-		const afterIndex = formPages.findIndex((page) => page.id === afterID);
+		const afterIndex = getPageIndex(afterID);
+
 		if (afterIndex !== -1) {
 			// Create a copy, since splice edits in place
 			const modifiedPages = JSON.parse(JSON.stringify(formPages));
@@ -78,8 +88,7 @@ export function FormPageProvider(props: TProps) {
 	};
 
 	const deletePage = (id: IFormPage['id']) => {
-		// find ID's index
-		const pageIndex = formPages.findIndex((page) => page.id === id);
+		const pageIndex = getPageIndex(id);
 
 		// only allow removal of "Pages"
 		if (
@@ -99,7 +108,7 @@ export function FormPageProvider(props: TProps) {
 	};
 
 	const updatePages = (pages: IFormPageContext['formPages']) => {
-		// TODO: check that name is unique
+		// TODO: basic validation, such as unique ID and name
 		setFormPages(pages);
 	};
 
@@ -109,6 +118,8 @@ export function FormPageProvider(props: TProps) {
 			formPages,
 			addPage,
 			deletePage,
+			getActivePage,
+			getPageIndex,
 			updateActivePage,
 			updatePages,
 		}),

@@ -1,17 +1,20 @@
-import React, {Context, useContext} from 'react';
+import React from 'react';
 import {Button} from '@mui/material';
 import {FormNavIconMap, type TFormNavIcon} from './FormNav.constants';
-import {FormPageContext, IFormPageContext} from '@/context/FormPageContext';
 import NavButtonMenu from '@/ui/NavButton/NavButtonMenu';
 import {type IFormPage} from '@/types/IFormPage';
 
 type TProps = Readonly<{
+	isSelected: boolean;
 	item: IFormPage;
+	onClick: (event: React.MouseEvent) => void;
 }>;
 
 export default function FormNavBarItem (props: TProps) {
 	const {
+		isSelected,
 		item,
+		onClick,
 	} = props;
 
 	if (!item) {
@@ -19,26 +22,19 @@ export default function FormNavBarItem (props: TProps) {
 		return null;
 	}
 
-	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
 	const iconElement = React.createElement(FormNavIconMap[item.icon as TFormNavIcon], {});
-	const isActiveItem =  item.id === formContext?.activeNavItemID;
-
-	const selectPage = (event: React.MouseEvent) => {
-		event.stopPropagation();
-		formContext?.updateActivePage(item.id)
-	};
 
 	return (
 		<Button
-			color={isActiveItem ? 'primary' : 'secondary'}
+			color={isSelected ? 'primary' : 'secondary'}
 			startIcon={iconElement}
 			variant="outlined"
-			onClick={selectPage}
+			onClick={onClick}
 		>
 			<span className="overflow-ellipsis whitespace-nowrap">
 				{item.name}
 			</span>
-			{ isActiveItem && <span className="ml-2"><NavButtonMenu item={item} /></span> }
+			{ isSelected && <span className="ml-2"><NavButtonMenu item={item} /></span> }
 		</Button>
 	);
 }
