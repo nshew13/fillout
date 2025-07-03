@@ -20,7 +20,7 @@ import MuiIconFileCopyOutlined from '@mui/icons-material/FileCopyOutlined';
 import MuiIconMoreVert from '@mui/icons-material/MoreVert';
 
 type TProps = Readonly<{
-	item: IFormPage;
+	formPage: IFormPage;
 }>;
 
 
@@ -30,7 +30,7 @@ const StyledListHeader = styled(ListSubheader)({
 
 export default function NavButtonMenu (props: TProps) {
 	const {
-		item,
+		formPage,
 	} = props;
 
 	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
@@ -42,7 +42,7 @@ export default function NavButtonMenu (props: TProps) {
 		setDialogIsOpen(false);
 
 		if (newName) {
-			const pageIndex = formContext.getPageIndex(item.id);
+			const pageIndex = formContext.getPageIndex(formPage.id);
 
 			// Create a copy, since splice edits in place
 			const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
@@ -58,11 +58,11 @@ export default function NavButtonMenu (props: TProps) {
 	};
 
 	const actionDelete = () => {
-		formContext.deletePage(item.id);
+		formContext.deletePage(formPage.id);
 	}
 
 	const actionDuplicate = () => {
-		formContext.addPage(item.id, item);
+		formContext.addPage(formPage.id, formPage);
 	}
 
 	const actionRename = () => {
@@ -71,13 +71,13 @@ export default function NavButtonMenu (props: TProps) {
 	}
 
 	const actionSetAsFirst = () => {
-		const pageIndex = formContext.getPageIndex(item.id);
+		const pageIndex = formContext.getPageIndex(formPage.id);
 
 		// Create a copy, since splice edits in place
 		const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
 
 		modifiedPages.splice(pageIndex, 1);
-		modifiedPages.splice(1, 0, item);
+		modifiedPages.splice(1, 0, formPage);
 		formContext.updatePages(modifiedPages);
 	}
 
@@ -91,7 +91,7 @@ export default function NavButtonMenu (props: TProps) {
 			<MuiIconMoreVert className="hs-tooltip [--trigger:click] inline-block" onClick={menuOpen} />
 
 			<NavButtonMenuRenameDialog
-				item={item}
+				formPage={formPage}
 				onClose={handleRenameDialogClose}
 				showDialog={dialogIsOpen}
 			/>

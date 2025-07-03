@@ -6,7 +6,7 @@ import type {IFormPage} from '@/types/IFormPage';
 
 
 type TProps = Readonly<{
-	item: IFormPage
+	formPage: IFormPage
 	onClose: (newName: string) => void;
 	showDialog: boolean;
 }>;
@@ -14,7 +14,7 @@ type TProps = Readonly<{
 
 export default function NavButtonMenuRenameDialog (props: TProps) {
 	const {
-		item,
+		formPage,
 		onClose,
 		showDialog,
 	} = props;
@@ -28,7 +28,7 @@ export default function NavButtonMenuRenameDialog (props: TProps) {
 
 	return (
 		<Dialog open={showDialog} onClose={onClose}>
-			<DialogTitle>Rename "{item?.name ?? ''}"</DialogTitle>
+			<DialogTitle>Rename "{formPage?.name ?? ''}"</DialogTitle>
 			<DialogContent sx={{ paddingBottom: 0 }}>
 				<DialogContentText>
 					Please enter a unique name for this form page.

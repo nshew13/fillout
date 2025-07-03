@@ -6,23 +6,23 @@ import {type IFormPage} from '@/types/IFormPage';
 
 type TProps = Readonly<{
 	isSelected: boolean;
-	item: IFormPage;
+	formPage: IFormPage;
 	onClick: (event: React.MouseEvent) => void;
 }>;
 
 export default function FormNavBarItem (props: TProps) {
 	const {
 		isSelected,
-		item,
+		formPage,
 		onClick,
 	} = props;
 
-	if (!item) {
-		console.warn('No item specified for FormNavBarItem', props);
+	if (!formPage) {
+		console.warn('No form page specified for FormNavBarItem', props);
 		return null;
 	}
 
-	const iconElement = React.createElement(FormNavIconMap[item.icon as TFormNavIcon], {});
+	const iconElement = React.createElement(FormNavIconMap[formPage.icon as TFormNavIcon], {});
 
 	return (
 		<Button
@@ -32,9 +32,9 @@ export default function FormNavBarItem (props: TProps) {
 			onClick={onClick}
 		>
 			<span className="overflow-ellipsis whitespace-nowrap">
-				{item.name}
+				{formPage.name}
 			</span>
-			{ isSelected && <span className="ml-2"><NavButtonMenu item={item} /></span> }
+			{ isSelected && <span className="ml-2"><NavButtonMenu formPage={formPage} /></span> }
 		</Button>
 	);
 }

@@ -4,7 +4,7 @@ import {type IFormPage} from '@/types/IFormPage';
 export interface IFormPageContext {
 	activeNavItemID: IFormPage['id'];
 	formPages: IFormPage[];
-	addPage: (afterID: IFormPage['id'], navItem?: IFormPage) => void;
+	addPage: (afterID: IFormPage['id'], formPage?: IFormPage) => void;
 	deletePage: (id: IFormPage['id']) => void;
 	getActivePage: () => IFormPage;
 	getPageIndex: (id: IFormPage['id']) => number;
@@ -56,7 +56,7 @@ export function FormPageProvider(props: TProps) {
 		[formPages],
 	);
 
-	const addPage = (afterID: IFormPage['id'], navItem?: IFormPage) => {
+	const addPage = (afterID: IFormPage['id'], formPage?: IFormPage) => {
 		const afterIndex = getPageIndex(afterID);
 
 		if (afterIndex !== -1) {
@@ -64,12 +64,12 @@ export function FormPageProvider(props: TProps) {
 			const modifiedPages = JSON.parse(JSON.stringify(formPages));
 
 			let newPage: IFormPage;
-			if (navItem) {
+			if (formPage) {
 				/*
 				 * Update the name and ID. Without form page content,
 				 * this is no different from a "blank" page.
 				 */
-				newPage = JSON.parse(JSON.stringify(navItem));
+				newPage = JSON.parse(JSON.stringify(formPage));
 				newPage.name = lastAutoName;
 				newPage.id = formPages.length; // FIXME: This won't work if/after deleting pages
 			} else {

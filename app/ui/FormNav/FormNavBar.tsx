@@ -15,22 +15,22 @@ export default function FormNavBar() {
 		formContext.updatePages(reorderedPages);
 	};
 
-	const selectPage = (event: React.MouseEvent, item: IFormPage) => {
+	const selectPage = (event: React.MouseEvent, formPage: IFormPage) => {
 		event.stopPropagation();
-		formContext?.updateActivePage(item.id)
+		formContext?.updateActivePage(formPage.id)
 	};
 
 	return (
 		<div className="flex justify-self-start max-w-8/10 overflow-x-auto pb-4">
 			<ReactSortable list={pages} setList={reorderPages} className="flex justify-self-start">
-				{pages.map((item) => (
-					<FragmentSortable key={item.id}>
+				{pages.map((formPage) => (
+					<FragmentSortable key={formPage.id}>
 						<FormNavBarItem
-							isSelected={item.id === formContext?.activeNavItemID}
-							item={item}
-							onClick={(event) => selectPage(event, item)}
+							isSelected={formPage.id === formContext?.activeNavItemID}
+							formPage={formPage}
+							onClick={(event) => selectPage(event, formPage)}
 						/>
-						<NavButtonSpacer afterID={item.id} />
+						<NavButtonSpacer afterID={formPage.id} />
 					</FragmentSortable>
 				))}
 			</ReactSortable>
