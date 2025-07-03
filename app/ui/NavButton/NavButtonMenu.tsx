@@ -1,5 +1,6 @@
 import React, {Context, useContext, useState} from 'react';
 import Divider from '@mui/material/Divider';
+import IconNavMenuFlag from '@/ui/NavButton/IconNavMenuFlag';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
@@ -11,12 +12,11 @@ import type {IFormPage} from '@/types/IFormPage';
 import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
 
 import styled from '@emotion/styled';
-import CircleCheckOutline from '@mui/icons-material/CheckCircleOutline';
-import ContentPaste from '@mui/icons-material/ContentPaste';
-import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import FileCopyOutlined from '@mui/icons-material/FileCopyOutlined';
-import IconNavMenuFlag from '@/ui/NavButton/IconNavMenuFlag';
-import MoreVert from '@mui/icons-material/MoreVert';
+import MuiIconContentPaste from '@mui/icons-material/ContentPaste';
+import MuiIconDeleteOutline from '@mui/icons-material/DeleteOutline';
+import MuiIconDriveFileRenameOutline from '@mui/icons-material/DriveFileRenameOutline';
+import MuiIconFileCopyOutlined from '@mui/icons-material/FileCopyOutlined';
+import MuiIconMoreVert from '@mui/icons-material/MoreVert';
 
 type TProps = Readonly<{
 	item: IFormPage;
@@ -71,7 +71,7 @@ export default function NavButtonMenu (props: TProps) {
 
 	return (
 		<>
-			<MoreVert className="hs-tooltip [--trigger:click] inline-block" onClick={menuOpen} />
+			<MuiIconMoreVert className="hs-tooltip [--trigger:click] inline-block" onClick={menuOpen} />
 
 			<Menu
 				sx={{ width: 320, maxWidth: '100%' }}
@@ -92,20 +92,20 @@ export default function NavButtonMenu (props: TProps) {
 
 					<NavButtonMenuItem
 						onClick={() => actionRename(item)}
-						icon={CircleCheckOutline}
+						icon={MuiIconDriveFileRenameOutline}
 						label="Rename"
 					/>
 
 					{/* I'm not sure what "copy" does without paste, so for now, it is the same as Duplicate */}
 					<NavButtonMenuItem
 						onClick={() => actionDuplicate(item)}
-						icon={ContentPaste}
+						icon={MuiIconContentPaste}
 						label="Copy"
 					/>
 
 					<NavButtonMenuItem
 						onClick={() => actionDuplicate(item)}
-						icon={FileCopyOutlined}
+						icon={MuiIconFileCopyOutlined}
 						label="Duplicate"
 					/>
 
@@ -113,7 +113,7 @@ export default function NavButtonMenu (props: TProps) {
 
 					<MenuItem onClick={() => {formContext.deletePage(item.id)}}>
 						<ListItemIcon>
-							<DeleteOutline fontSize="small" className="text-red-600" />
+							<MuiIconDeleteOutline fontSize="small" className="text-red-600" />
 						</ListItemIcon>
 						<ListItemText className="text-red-600">Delete</ListItemText>
 					</MenuItem>

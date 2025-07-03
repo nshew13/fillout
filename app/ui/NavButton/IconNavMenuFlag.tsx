@@ -1,9 +1,9 @@
 import React from 'react';
-import Flag from '@mui/icons-material/Flag';
+import MuiIconFlag from '@mui/icons-material/Flag';
 
 
 export default function IconNavMenuFlag () {
 	return (
-		<Flag fontSize="small" color="success" />
+		<MuiIconFlag fontSize="small" color="success" />
 	);
 }

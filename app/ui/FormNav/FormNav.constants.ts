@@ -1,11 +1,11 @@
-import CircleCheckOutline from '@mui/icons-material/CheckCircleOutline';
-import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
-import ErrorOutline from '@mui/icons-material/ErrorOutline';
+import MuiIconCircleCheckOutline from '@mui/icons-material/CheckCircleOutline';
+import MuiIconDescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
+import MuiIconErrorOutline from '@mui/icons-material/ErrorOutline';
 
 export const FormNavIconMap = {
-	'check': CircleCheckOutline,
-	'info': ErrorOutline,
-	'page': DescriptionOutlined,
+	'check': MuiIconCircleCheckOutline,
+	'info': MuiIconErrorOutline,
+	'page': MuiIconDescriptionOutlined,
 } as const;
 
 export type TFormNavIcon = keyof typeof FormNavIconMap;
