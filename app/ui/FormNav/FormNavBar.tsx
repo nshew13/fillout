@@ -23,14 +23,14 @@ export default function FormNavBar() {
 	return (
 		<div className="flex justify-self-start max-w-8/10 overflow-x-auto pb-4">
 			<ReactSortable list={pages} setList={reorderPages} className="flex justify-self-start">
-				{pages.map((formPage) => (
+				{pages.map((formPage, index) => (
 					<FragmentSortable key={formPage.id}>
 						<FormNavBarItem
 							isSelected={formPage.id === formContext.activeNavItemID}
 							formPage={formPage}
 							onClick={(event) => selectPage(event, formPage)}
 						/>
-						<NavButtonSpacer afterPage={formPage} />
+						{ index < pages.length - 1 && <NavButtonSpacer afterPage={formPage} /> }
 					</FragmentSortable>
 				))}
 			</ReactSortable>

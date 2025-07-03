@@ -59,10 +59,12 @@ export default function NavButtonMenu (props: TProps) {
 
 	const actionDelete = () => {
 		formContext.deletePage(formPage);
+		handleMenuClose();
 	}
 
 	const actionDuplicate = () => {
 		formContext.addPage(formPage, formPage);
+		handleMenuClose();
 	}
 
 	const actionRename = () => {
