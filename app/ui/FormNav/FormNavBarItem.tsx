@@ -23,6 +23,7 @@ export default function FormNavBarItem (props: TProps) {
 	}
 
 	const iconElement = React.createElement(FormNavIconMap[formPage.icon as TFormNavIcon], {});
+	const pageIsEditable = formPage?.editable !== false;
 
 	return (
 		<Button
@@ -34,7 +35,7 @@ export default function FormNavBarItem (props: TProps) {
 			<span className="overflow-ellipsis whitespace-nowrap">
 				{formPage.name}
 			</span>
-			{ isSelected && <span className="ml-2"><NavButtonMenu formPage={formPage} /></span> }
+			{ pageIsEditable && isSelected && <span className="ml-2"><NavButtonMenu formPage={formPage} /></span> }
 		</Button>
 	);
 }
