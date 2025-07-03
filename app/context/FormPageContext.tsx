@@ -30,7 +30,6 @@ export function FormPageProvider(props: TProps) {
 	// holds the last "Page #" for inserting a new page
 	const lastAutoName = useMemo(
 		() => {
-			console.log('calculating lastAutoName');
 			let highestAutoNumber = 0;
 
 			formPages.forEach((page: IFormPage) => {
@@ -96,7 +95,6 @@ export function FormPageProvider(props: TProps) {
 	};
 
 	const updateActivePage = (id: IFormPageContext['activeNavItemID']) => {
-		console.log(`setActiveNavItemID(${id})`);
 		setActiveNavItemID(id);
 	};
 
