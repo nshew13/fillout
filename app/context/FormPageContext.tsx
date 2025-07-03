@@ -2,13 +2,16 @@ import React, {createContext, useMemo, useState} from 'react';
 import {type IFormPage} from '@/types/IFormPage';
 
 export interface IFormPageContext {
+	// data
 	activeNavItemID: IFormPage['id'];
 	formPages: IFormPage[];
-	addPage: (afterID: IFormPage['id'], formPage?: IFormPage) => void;
-	deletePage: (id: IFormPage['id']) => void;
+
+	// methods
+	addPage: (afterPage: IFormPage, newPage?: IFormPage) => void;
+	deletePage: (page: IFormPage) => void;
 	getActivePage: () => IFormPage;
-	getPageIndex: (id: IFormPage['id']) => number;
-	updateActivePage: (id: IFormPage['id']) => void;
+	getPageIndexByID: (id: IFormPage['id']) => number;
+	updateActivePage: (page: IFormPage) => void;
 	updatePages: (pages: IFormPage[]) => void;
 }
 
@@ -22,22 +25,27 @@ const RE_PAGE_AUTO_NAME = /^Page (\d+)$/;
 
 export function FormPageProvider(props: TProps) {
 	const [formPages, setFormPages] = useState<IFormPageContext['formPages']>([
-		{id: 0, name: 'Info', icon: 'info'},
+		{id: 0, name: 'Info', icon: 'info', editable: false},
 		{id: 1, name: 'Page 1', icon: 'page'},
 		{id: 2, name: 'Page 2', icon: 'page'},
-		{id: 3, name: 'Ending', icon: 'check'},
+		{id: 3, name: 'Ending', icon: 'check', editable: false},
 	]);
 	const [activeNavItemID, setActiveNavItemID] = useState<IFormPageContext['activeNavItemID']>(0);
 
-	const getPageIndex = (id: IFormPage['id']) => {
+	const getPageIndexByID = (id: IFormPage['id']) => {
 		return formPages.findIndex((page) => page.id === id);
 	}
 
 	const getActivePage = () => {
-		return formPages[getPageIndex(activeNavItemID)];
+		return formPages[getPageIndexByID(activeNavItemID)];
 	}
 
-	// holds the last "Page #" for inserting a new page
+	/**
+	 * holds the last "Page #" for inserting a new page
+	 *
+	 * This finds the max number in use, which means that if a page has
+	 * been renamed, a new page might reuse a number.
+	 */
 	const lastAutoName = useMemo(
 		() => {
 			let highestAutoNumber = 0;
@@ -56,20 +64,21 @@ export function FormPageProvider(props: TProps) {
 		[formPages],
 	);
 
-	const addPage = (afterID: IFormPage['id'], formPage?: IFormPage) => {
-		const afterIndex = getPageIndex(afterID);
+	const pageIsEditable = (formPage: IFormPage) => formPage?.editable !== false;
+
+	const addPage = (afterPage: IFormPage, newPage?: IFormPage) => {
+		const afterIndex = getPageIndexByID(afterPage.id);
 
 		if (afterIndex !== -1) {
 			// Create a copy, since splice edits in place
 			const modifiedPages = JSON.parse(JSON.stringify(formPages));
 
-			let newPage: IFormPage;
-			if (formPage) {
+			if (typeof newPage !== 'undefined') {
 				/*
 				 * Update the name and ID. Without form page content,
 				 * this is no different from a "blank" page.
 				 */
-				newPage = JSON.parse(JSON.stringify(formPage));
+				newPage = JSON.parse(JSON.stringify(newPage)) as IFormPage;
 				newPage.name = lastAutoName;
 				newPage.id = formPages.length; // FIXME: This won't work if/after deleting pages
 			} else {
@@ -83,18 +92,14 @@ export function FormPageProvider(props: TProps) {
 			modifiedPages.splice(afterIndex + 1, 0, newPage);
 			setFormPages(modifiedPages);
 		} else {
-			throw new Error(`Page with ID ${afterID} does not exist`);
+			throw new Error(`Page with ID ${afterPage} does not exist`);
 		}
 	};
 
-	const deletePage = (id: IFormPage['id']) => {
-		const pageIndex = getPageIndex(id);
+	const deletePage = (formPage: IFormPage) => {
+		const pageIndex = getPageIndexByID(formPage.id);
 
-		// only allow removal of "Pages"
-		if (
-			pageIndex > 0 && // disallow removal of "Info"
-			pageIndex < formPages.length - 1 // disallow removal of "Ending"
-		) {
+		if (pageIndex !== -1 && pageIsEditable(formPage)) {
 			// Create a copy, since splice edits in place
 			const modifiedPages = JSON.parse(JSON.stringify(formPages));
 			modifiedPages.splice(pageIndex, 1);
@@ -103,8 +108,8 @@ export function FormPageProvider(props: TProps) {
 		}
 	};
 
-	const updateActivePage = (id: IFormPageContext['activeNavItemID']) => {
-		setActiveNavItemID(id);
+	const updateActivePage = (page: IFormPage) => {
+		setActiveNavItemID(page.id);
 	};
 
 	const updatePages = (pages: IFormPageContext['formPages']) => {
@@ -119,7 +124,7 @@ export function FormPageProvider(props: TProps) {
 			addPage,
 			deletePage,
 			getActivePage,
-			getPageIndex,
+			getPageIndexByID,
 			updateActivePage,
 			updatePages,
 		}),

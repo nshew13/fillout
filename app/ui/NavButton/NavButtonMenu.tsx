@@ -42,7 +42,7 @@ export default function NavButtonMenu (props: TProps) {
 		setDialogIsOpen(false);
 
 		if (newName) {
-			const pageIndex = formContext.getPageIndex(formPage.id);
+			const pageIndex = formContext.getPageIndexByID(formPage.id);
 
 			// Create a copy, since splice edits in place
 			const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
@@ -58,11 +58,11 @@ export default function NavButtonMenu (props: TProps) {
 	};
 
 	const actionDelete = () => {
-		formContext.deletePage(formPage.id);
+		formContext.deletePage(formPage);
 	}
 
 	const actionDuplicate = () => {
-		formContext.addPage(formPage.id, formPage);
+		formContext.addPage(formPage, formPage);
 	}
 
 	const actionRename = () => {
@@ -71,7 +71,7 @@ export default function NavButtonMenu (props: TProps) {
 	}
 
 	const actionSetAsFirst = () => {
-		const pageIndex = formContext.getPageIndex(formPage.id);
+		const pageIndex = formContext.getPageIndexByID(formPage.id);
 
 		// Create a copy, since splice edits in place
 		const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));

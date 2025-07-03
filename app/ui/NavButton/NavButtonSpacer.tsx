@@ -4,7 +4,7 @@ import MuiIconAddBoxOutlined from '@mui/icons-material/AddBoxOutlined';
 import {type IFormPage} from '@/types/IFormPage';
 
 type TProps = Readonly<{
-	afterID: IFormPage['id'];
+	afterPage: IFormPage;
 }>;
 
 export default function NavButtonSpacer (props: TProps) {
@@ -12,7 +12,7 @@ export default function NavButtonSpacer (props: TProps) {
 
 	const addPage = (event: React.MouseEvent) => {
 		event.stopPropagation();
-		formContext?.addPage(props.afterID);
+		formContext.addPage(props.afterPage);
 	};
 
 	return (

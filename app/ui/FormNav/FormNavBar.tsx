@@ -9,7 +9,7 @@ import {type IFormPage} from '@/types/IFormPage';
 
 export default function FormNavBar() {
 	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
-	const pages = formContext?.formPages ?? [];
+	const pages = formContext.formPages ?? [];
 
 	const reorderPages = (reorderedPages: IFormPage[]) => {
 		formContext.updatePages(reorderedPages);
@@ -17,7 +17,7 @@ export default function FormNavBar() {
 
 	const selectPage = (event: React.MouseEvent, formPage: IFormPage) => {
 		event.stopPropagation();
-		formContext?.updateActivePage(formPage.id)
+		formContext.updateActivePage(formPage)
 	};
 
 	return (
@@ -26,11 +26,11 @@ export default function FormNavBar() {
 				{pages.map((formPage) => (
 					<FragmentSortable key={formPage.id}>
 						<FormNavBarItem
-							isSelected={formPage.id === formContext?.activeNavItemID}
+							isSelected={formPage.id === formContext.activeNavItemID}
 							formPage={formPage}
 							onClick={(event) => selectPage(event, formPage)}
 						/>
-						<NavButtonSpacer afterID={formPage.id} />
+						<NavButtonSpacer afterPage={formPage} />
 					</FragmentSortable>
 				))}
 			</ReactSortable>
