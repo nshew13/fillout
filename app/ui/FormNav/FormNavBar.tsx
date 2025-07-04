@@ -17,7 +17,12 @@ export default function FormNavBar() {
 		formContext.updatePages(reorderedPages);
 	};
 
-	const selectPage = (event: React.MouseEvent, formPage: IFormPage) => {
+	const pageAdd = (event: React.MouseEvent, formPage: IFormPage) => {
+		event.stopPropagation();
+		formContext.addPage(formPage);
+	};
+
+	const pageSelect = (event: React.MouseEvent, formPage: IFormPage) => {
 		event.stopPropagation();
 		formNavContext.updateActivePage(formPage);
 	};
@@ -28,14 +33,24 @@ export default function FormNavBar() {
 				{pages.map((formPage, index) => (
 					<FragmentSortable key={formPage.id}>
 						<FormNavBarItem
-							isSelected={formPage.id === formNavContext.activeNavItemID}
 							formPage={formPage}
-							onClick={(event) => selectPage(event, formPage)}
+							isSelected={formPage?.id === formNavContext?.activeNavItemID}
+							onClick={(event) => pageSelect(event, formPage)}
 						/>
 						{ index < pages.length - 1 && <NavButtonSpacer afterPage={formPage} /> }
 					</FragmentSortable>
 				))}
 			</ReactSortable>
+			{/* use div to prevent crushing by flex */}
+			<div className="flex justify-self-start">
+				{/* add page at length - 2 to insert before Ending */}
+				<FormNavBarItem
+					className="active"
+					formPage={{id: -1, name: 'Add page', icon: 'plus', editable: false}}
+					isSelected={false}
+					onClick={(event) => pageAdd(event, pages[pages.length - 2])}
+				/>
+			</div>
 		</div>
 	);
 };

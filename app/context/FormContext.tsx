@@ -25,11 +25,10 @@ const RE_PAGE_AUTO_NAME = /^Page (\d+)$/;
 export function FormProvider (props: TProps) {
 	const formNavContext = useContext(FormNavContext as Context<IFormNavContext>);
 
-	// TODO: use uuid for ID
 	const [formPages, setFormPages] = useState<IFormContext['formPages']>([
 		{id: 0, name: 'Info',   icon: 'info', editable: false},
-		{id: 1, name: 'Page 1', icon: 'page'},
-		{id: 2, name: 'Page 2', icon: 'page'},
+		{id: 1, name: 'Details', icon: 'page'},
+		{id: 2, name: 'Other', icon: 'page'},
 		{id: 3, name: 'Ending', icon: 'check', editable: false},
 	]);
 

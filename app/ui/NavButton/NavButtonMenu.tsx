@@ -24,8 +24,11 @@ type TProps = Readonly<{
 }>;
 
 
-const StyledListHeader = styled(ListSubheader)({
-	backgroundImage: 'var(--Paper-overlay)',
+const MenuHeader = styled(ListSubheader)({
+	fontSize: '16px',
+	fontWeight: 'medium',
+	lineHeight: '24px',
+	marginBottom: '0.5em',
 });
 
 export default function NavButtonMenu (props: TProps) {
@@ -108,7 +111,7 @@ export default function NavButtonMenu (props: TProps) {
 				onClose={handleMenuClose}
 			>
 				<MenuList>
-					<StyledListHeader>Settings</StyledListHeader>
+					<MenuHeader>Settings</MenuHeader>
 
 					<Divider />
 
