@@ -2,9 +2,10 @@ import React from 'react';
 import {Button, type ButtonProps} from '@mui/material';
 import {FormNavIconMap, type TFormNavIcon} from './FormNav.constants';
 import NavButtonMenu from '@/ui/NavButton/NavButtonMenu';
-import {type IFormPage} from '@/types/IFormPage';
 import {alpha} from '@mui/material/styles';
 import styled from '@emotion/styled';
+import {useDraggable} from '@dnd-kit/core';
+import type {IFormPage} from '@/types/IFormPage';
 
 type TProps = Readonly<{
 	className?: string;
@@ -24,6 +25,7 @@ const NavButtonDefault = styled(Button)<ButtonProps>(({ theme }) => ({
 	borderRadius: '8px',
 	padding: '0 10px',
 	width: 'min-content',
+	touchAction: 'none',
 
 	'&:hover': {
 		backgroundColor: alpha(buttonDefaultBase, 0.35),
@@ -43,6 +45,10 @@ const NavButtonDefault = styled(Button)<ButtonProps>(({ theme }) => ({
 			color: buttonDefaultBase, /* color of menu ellipsis */
 		},
 	},
+
+	'&.not-editable': {
+		cursor: 'not-allowed',
+	},
 }));
 
 
@@ -59,14 +65,32 @@ export default function FormNavBarItem (props: TProps) {
 		return null;
 	}
 
+	const {attributes, listeners, setNodeRef, transform} = useDraggable({
+		id: formPage.id,
+	});
+
+	const style = transform ? {
+		transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+	} : undefined;
+
+
 	const iconElement = React.createElement(FormNavIconMap[formPage.icon as TFormNavIcon], {});
 	const pageIsEditable = formPage?.editable !== false;
 
 	return (
 		<NavButtonDefault
-			className={`group${isSelected ? ' active' : ''}${className ? ' ' + className : ''}`}
+			ref={setNodeRef}
+			style={style}
+			className={
+				'group' +
+				(isSelected ? ' active' : '') +
+				(className ? ' ' + className : '') +
+				(pageIsEditable ? '' : ' not-editable')
+			}
 			startIcon={iconElement}
 			onClick={onClick}
+			{...listeners}
+			{...attributes}
 		>
 			<span className="label overflow-ellipsis whitespace-nowrap">
 				{formPage.name}

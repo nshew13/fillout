@@ -9,7 +9,9 @@ export interface IFormContext {
 	// methods
 	addPage: (afterPage: IFormPage, newPage?: IFormPage) => void;
 	deletePage: (page: IFormPage) => void;
+	getPageByID: (id: IFormPage['id']) => IFormPage | undefined;
 	getPageIndexByID: (id: IFormPage['id']) => number;
+	pageIsEditable: (formPage: IFormPage) => boolean;
 	updatePages: (pages: IFormPage[]) => void;
 }
 
@@ -25,11 +27,15 @@ export function FormProvider (props: TProps) {
 	const formNavContext = useContext(FormNavContext as Context<IFormNavContext>);
 
 	const [formPages, setFormPages] = useState<IFormContext['formPages']>([
-		{id: 0, name: 'Info',   icon: 'info', editable: false},
-		{id: 1, name: 'Details', icon: 'page'},
-		{id: 2, name: 'Other', icon: 'page'},
-		{id: 3, name: 'Ending', icon: 'check', editable: false},
+		{id: '0', name: 'Info',   icon: 'info', editable: false},
+		{id: '1', name: 'Details', icon: 'page'},
+		{id: '2', name: 'Other', icon: 'page'},
+		{id: '3', name: 'Ending', icon: 'check', editable: false},
 	]);
+
+	const getPageByID = useCallback((id: IFormPage['id']) => {
+		return formPages.find((page) => page.id === id);
+	}, [formPages]);
 
 	const getPageIndexByID = useCallback((id: IFormPage['id']) => {
 		return formPages.findIndex((page) => page.id === id);
@@ -76,13 +82,13 @@ export function FormProvider (props: TProps) {
 				 */
 				insertPage = {
 					...newPage,
-					id: formPages.length, // FIXME: This won't work if/after deleting pages
+					id: Date.now().toString(),
 					name: lastAutoName,
 				};
 			} else {
 				insertPage = {
 					icon: 'page',
-					id: formPages.length, // FIXME: This won't work if/after deleting pages
+					id: Date.now().toString(),
 					name: lastAutoName,
 				};
 			}
@@ -93,9 +99,9 @@ export function FormProvider (props: TProps) {
 			// set new page as active
 			formNavContext.updateActivePage(insertPage);
 		} else {
-			throw new Error(`Page with ID ${afterPage} does not exist`);
+			throw new Error(`Page with ID ${afterPage.id} does not exist`);
 		}
-	}, []);
+	}, [formPages]);
 
 	const deletePage = useCallback((formPage: IFormPage) => {
 		const pageIndex = getPageIndexByID(formPage.id);
@@ -124,7 +130,9 @@ export function FormProvider (props: TProps) {
 			formPages,
 			addPage,
 			deletePage,
+			getPageByID,
 			getPageIndexByID,
+			pageIsEditable,
 			updatePages,
 		}),
 		[formPages],

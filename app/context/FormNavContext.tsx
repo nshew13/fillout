@@ -16,7 +16,7 @@ type TProps = Readonly<{
 export const FormNavContext = createContext<IFormNavContext | null>(null);
 
 export function FormNavProvider (props: TProps) {
-	const [activeNavItemID, setActiveNavItemID] = useState<IFormNavContext['activeNavItemID']>(0);
+	const [activeNavItemID, setActiveNavItemID] = useState<IFormNavContext['activeNavItemID']>('0');
 
 	const updateActivePage = useCallback((page: IFormPage) => {
 		setActiveNavItemID(page.id);

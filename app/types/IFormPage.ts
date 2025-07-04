@@ -1,10 +1,9 @@
-import {ItemInterface} from 'react-sortablejs';
 import {TFormNavIcon} from '@/ui/FormNav/FormNav.constants';
 
-export interface IFormPage extends ItemInterface {
+export interface IFormPage {
 	editable?: boolean;
 	icon?: TFormNavIcon;
-	id: number;
+	id: string; // more reliable comparison than big ints
 	name: string;
 
 	/*
