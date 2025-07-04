@@ -1,5 +1,5 @@
 import React, {Context, useContext} from 'react';
-import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
+import {FormContext, type IFormContext} from '@/context/FormContext';
 import MuiIconAddBoxOutlined from '@mui/icons-material/AddBoxOutlined';
 import {type IFormPage} from '@/types/IFormPage';
 
@@ -8,7 +8,7 @@ type TProps = Readonly<{
 }>;
 
 export default function NavButtonSpacer (props: TProps) {
-	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
+	const formContext = useContext(FormContext as Context<IFormContext>);
 
 	const addPage = (event: React.MouseEvent) => {
 		event.stopPropagation();

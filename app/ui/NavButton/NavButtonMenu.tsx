@@ -1,4 +1,5 @@
 import React, {Context, useContext, useState} from 'react';
+import {FormContext, IFormContext} from '@/context/FormContext';
 import Divider from '@mui/material/Divider';
 import IconNavMenuFlag from '@/ui/NavButton/IconNavMenuFlag';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -9,7 +10,6 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import NavButtonMenuItem from '@/ui/NavButton/NavButtonMenuItem';
 import NavButtonMenuRenameDialog from '@/ui/NavButton/NavButtonMenuRenameDialog';
-import {FormPageContext, type IFormPageContext} from '@/context/FormPageContext';
 import type {IFormPage} from '@/types/IFormPage';
 
 import styled from '@emotion/styled';
@@ -33,7 +33,7 @@ export default function NavButtonMenu (props: TProps) {
 		formPage,
 	} = props;
 
-	const formContext = useContext(FormPageContext as Context<IFormPageContext>);
+	const formContext = useContext(FormContext as Context<IFormContext>);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [dialogIsOpen, setDialogIsOpen] = useState(false);
 	const menuIsOpen = Boolean(anchorEl);
@@ -57,17 +57,20 @@ export default function NavButtonMenu (props: TProps) {
 		setAnchorEl(null);
 	};
 
-	const actionDelete = () => {
+	const actionDelete = (event: React.MouseEvent) => {
+		event.stopPropagation();
 		formContext.deletePage(formPage);
 		handleMenuClose();
 	}
 
-	const actionDuplicate = () => {
+	const actionDuplicate = (event: React.MouseEvent) => {
+		event.stopPropagation();
 		formContext.addPage(formPage, formPage);
 		handleMenuClose();
 	}
 
-	const actionRename = () => {
+	const actionRename = (event: React.MouseEvent) => {
+		event.stopPropagation();
 		setDialogIsOpen(true);
 		handleMenuClose();
 	}
