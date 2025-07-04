@@ -1,4 +1,4 @@
-import React, {type Context, createContext, useContext, useMemo, useState} from 'react';
+import React, {type Context, createContext, useCallback, useContext, useMemo, useState} from 'react';
 import type {IFormPage} from '@/types/IFormPage';
 import {FormNavContext, type IFormNavContext} from '@/context/FormNavContext';
 
@@ -21,7 +21,6 @@ export const FormContext = createContext<IFormContext | null>(null);
 
 const RE_PAGE_AUTO_NAME = /^Page (\d+)$/;
 
-// TODO: wrap all in useCallback()
 export function FormProvider (props: TProps) {
 	const formNavContext = useContext(FormNavContext as Context<IFormNavContext>);
 
@@ -32,9 +31,9 @@ export function FormProvider (props: TProps) {
 		{id: 3, name: 'Ending', icon: 'check', editable: false},
 	]);
 
-	const getPageIndexByID = (id: IFormPage['id']) => {
+	const getPageIndexByID = useCallback((id: IFormPage['id']) => {
 		return formPages.findIndex((page) => page.id === id);
-	}
+	}, [formPages]);
 
 	/**
 	 * holds the last "Page #" for inserting a new page
@@ -60,9 +59,9 @@ export function FormProvider (props: TProps) {
 		[formPages],
 	);
 
-	const pageIsEditable = (formPage: IFormPage) => formPage?.editable !== false;
+	const pageIsEditable = useCallback((formPage: IFormPage) => formPage?.editable !== false, []);
 
-	const addPage = (afterPage: IFormPage, newPage?: IFormPage) => {
+	const addPage = useCallback((afterPage: IFormPage, newPage?: IFormPage) => {
 		const afterIndex = getPageIndexByID(afterPage.id);
 
 		if (afterIndex !== -1) {
@@ -96,9 +95,9 @@ export function FormProvider (props: TProps) {
 		} else {
 			throw new Error(`Page with ID ${afterPage} does not exist`);
 		}
-	};
+	}, []);
 
-	const deletePage = (formPage: IFormPage) => {
+	const deletePage = useCallback((formPage: IFormPage) => {
 		const pageIndex = getPageIndexByID(formPage.id);
 
 		if (pageIndex !== -1 && pageIsEditable(formPage)) {
@@ -113,12 +112,12 @@ export function FormProvider (props: TProps) {
 
 			setFormPages(modifiedPages);
 		}
-	};
+	}, []);
 
-	const updatePages = (pages: IFormContext['formPages']) => {
+	const updatePages = useCallback((pages: IFormContext['formPages']) => {
 		// TODO: basic validation, such as unique ID and name
 		setFormPages(pages);
-	};
+	}, []);
 
 	const contextValue = useMemo(
 		() => ({

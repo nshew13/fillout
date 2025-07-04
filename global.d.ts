@@ -1,5 +1,3 @@
-import type { IStaticMethods } from "preline/dist";
-
 declare global {
 	interface Window {
 		// Optional third-party libraries
@@ -9,9 +7,6 @@ declare global {
 		// DataTable;
 		// Dropzone;
 		// VanillaCalendarPro;
-
-		// Preline UI
-		HSStaticMethods: IStaticMethods;
 	}
 }
 

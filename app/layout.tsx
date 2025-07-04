@@ -1,7 +1,6 @@
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
-import PrelineScriptWrapper from '@/ui/PrelineScriptWrapper';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -33,7 +32,6 @@ export default function FormBuilderLayout({
 		<div className="w-screen h-screen flex flex-col justify-stretch items-center p-6">
 			{children}
 		</div>
-		<PrelineScriptWrapper />
 		</body>
 		</html>
 	);

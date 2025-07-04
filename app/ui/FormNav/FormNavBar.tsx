@@ -1,4 +1,4 @@
-import React, {type Context, useContext} from 'react';
+import React, {type Context, useCallback, useContext} from 'react';
 import {ReactSortable} from 'react-sortablejs';
 import {FormContext, type IFormContext} from '@/context/FormContext';
 import {FormNavContext, type IFormNavContext} from '@/context/FormNavContext';
@@ -13,19 +13,19 @@ export default function FormNavBar() {
 	const formContext = useContext(FormContext as Context<IFormContext>);
 	const pages = formContext.formPages ?? [];
 
-	const reorderPages = (reorderedPages: IFormPage[]) => {
+	const reorderPages = useCallback((reorderedPages: IFormPage[]) => {
 		formContext.updatePages(reorderedPages);
-	};
+	}, []);
 
-	const pageAdd = (event: React.MouseEvent, formPage: IFormPage) => {
+	const pageAdd = useCallback((event: React.MouseEvent, formPage: IFormPage) => {
 		event.stopPropagation();
 		formContext.addPage(formPage);
-	};
+	}, []);
 
-	const pageSelect = (event: React.MouseEvent, formPage: IFormPage) => {
+	const pageSelect = useCallback((event: React.MouseEvent, formPage: IFormPage) => {
 		event.stopPropagation();
 		formNavContext.updateActivePage(formPage);
-	};
+	}, []);
 
 	return (
 		<div className="flex justify-self-start max-w-8/10 overflow-x-auto pb-4">
