@@ -27,6 +27,7 @@ export default function FormNavBarItem (props: TProps) {
 
 	return (
 		<Button
+			className="group"
 			color={isSelected ? 'primary' : 'secondary'}
 			startIcon={iconElement}
 			variant="outlined"
@@ -35,7 +36,12 @@ export default function FormNavBarItem (props: TProps) {
 			<span className="overflow-ellipsis whitespace-nowrap">
 				{formPage.name}
 			</span>
-			{ pageIsEditable && isSelected && <span className="ml-2"><NavButtonMenu formPage={formPage} /></span> }
+			{
+				pageIsEditable &&
+				<span className={`ml-2 ${isSelected ? '' : 'hidden group-hover:inline'}`}>
+					<NavButtonMenu formPage={formPage} />
+				</span>
+			}
 		</Button>
 	);
 }
