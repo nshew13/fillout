@@ -31,7 +31,7 @@ export default function FormNavBar() {
 		if (!isDragging) {
 			formContext.addPage(formPage);
 		}
-	}, []);
+	}, [formContext.formPages]);
 
 	const pageMoveStart = useCallback((event: DragStartEvent) => {
 		setIsDragging(true);
