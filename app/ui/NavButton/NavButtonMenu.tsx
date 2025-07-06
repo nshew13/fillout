@@ -1,4 +1,4 @@
-import React, {Context, useContext, useState} from 'react';
+import React, {Context, useCallback, useContext, useState} from 'react';
 import {FormContext, IFormContext} from '@/context/FormContext';
 import Divider from '@mui/material/Divider';
 import IconNavMenuFlag from '@/ui/NavButton/IconNavMenuFlag';
@@ -41,44 +41,43 @@ export default function NavButtonMenu (props: TProps) {
 	const [dialogIsOpen, setDialogIsOpen] = useState(false);
 	const menuIsOpen = Boolean(anchorEl);
 
-	const handleRenameDialogClose = (newName: string) => {
+	const handleRenameDialogClose = useCallback((newName: string | KeyboardEvent) => {
 		setDialogIsOpen(false);
 
-		if (newName) {
+		// when closing with Escape, we get the onKeyDown event
+		if (newName && typeof newName === 'string') {
 			const pageIndex = formContext.getPageIndexByID(formPage.id);
 
 			// Create a copy, since splice edits in place
 			const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
 			modifiedPages[pageIndex].name = newName;
 			formContext.updatePages(modifiedPages);
-		} else {
-			console.warn('Invalid name:', newName);
 		}
-	};
+	}, [formContext.formPages]);
 
-	const handleMenuClose = () => {
+	const handleMenuClose = useCallback(() => {
 		setAnchorEl(null);
-	};
+	}, []);
 
-	const actionDelete = (event: React.MouseEvent) => {
+	const actionDelete = useCallback((event: React.MouseEvent) => {
 		event.stopPropagation();
 		formContext.deletePage(formPage);
 		handleMenuClose();
-	}
+	}, []);
 
-	const actionDuplicate = (event: React.MouseEvent) => {
+	const actionDuplicate = useCallback((event: React.MouseEvent) => {
 		event.stopPropagation();
 		formContext.addPage(formPage, formPage);
 		handleMenuClose();
-	}
+	}, []);
 
-	const actionRename = (event: React.MouseEvent) => {
+	const actionRename = useCallback((event: React.MouseEvent) => {
 		event.stopPropagation();
 		setDialogIsOpen(true);
 		handleMenuClose();
-	}
+	}, []);
 
-	const actionSetAsFirst = () => {
+	const actionSetAsFirst = useCallback(() => {
 		const pageIndex = formContext.getPageIndexByID(formPage.id);
 
 		// Create a copy, since splice edits in place
@@ -87,12 +86,12 @@ export default function NavButtonMenu (props: TProps) {
 		modifiedPages.splice(pageIndex, 1);
 		modifiedPages.splice(1, 0, formPage);
 		formContext.updatePages(modifiedPages);
-	}
+	}, [formContext.formPages]);
 
-	const menuOpen = (event: React.MouseEvent) => {
+	const menuOpen = useCallback((event: React.MouseEvent) => {
 		event.stopPropagation();
 		setAnchorEl(event.currentTarget as HTMLElement);
-	};
+	}, []);
 
 	return (
 		<>

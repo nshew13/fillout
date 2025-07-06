@@ -21,7 +21,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - The "Info" and "Ending" pages are configured as non-editable, meaning they can't be moved and don't display a context menu.
 
 ## Further enhancements
-If continuing this project, I would first add basic validation of pages, including checks for unique IDs and names, to the `updatePages` method.
+If continuing this project, I would first add basic validation of pages, including checks for unique IDs and names, to
+the `updatePages` method. I'd also try to get the autofocus working on the rename input; that's a pet peeve of mine.
 
 ## Main libraries used
 - React
