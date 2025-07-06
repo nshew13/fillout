@@ -10,6 +10,7 @@ import type {IFormPage} from '@/types/IFormPage';
 type TProps = Readonly<{
 	className?: string;
 	formPage: IFormPage;
+	isDragging: boolean;
 	isSelected: boolean;
 	onClick: (event: React.MouseEvent) => void;
 }>;
@@ -46,7 +47,14 @@ const NavButtonDefault = styled(Button)<ButtonProps>(({ theme }) => ({
 		},
 	},
 
-	'&.not-editable': {
+	'&.dragging': {
+		opacity: '0.7',
+		cursor: 'grab',
+		// put "under" other elements so NavButtonSpacer icons show on hover
+		zIndex: '-1',
+	},
+
+	'&.dragging.not-editable': {
 		cursor: 'not-allowed',
 	},
 }));
@@ -56,6 +64,7 @@ export default function FormNavBarItem (props: TProps) {
 	const {
 		className,
 		formPage,
+		isDragging,
 		isSelected,
 		onClick,
 	} = props;
@@ -81,8 +90,10 @@ export default function FormNavBarItem (props: TProps) {
 		<NavButtonDefault
 			ref={setNodeRef}
 			style={style}
+			{...attributes}
 			className={
 				'group' +
+				(isDragging ? ' dragging' : '') +
 				(isSelected ? ' active' : '') +
 				(className ? ' ' + className : '') +
 				(pageIsEditable ? '' : ' not-editable')
@@ -90,7 +101,6 @@ export default function FormNavBarItem (props: TProps) {
 			startIcon={iconElement}
 			onClick={onClick}
 			{...listeners}
-			{...attributes}
 		>
 			<span className="label overflow-ellipsis whitespace-nowrap">
 				{formPage.name}

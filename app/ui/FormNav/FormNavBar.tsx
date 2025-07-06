@@ -1,8 +1,8 @@
 import React, {type Context, useCallback, useContext, useState} from 'react';
 import {FormContext, type IFormContext} from '@/context/FormContext';
 import {FormNavContext, type IFormNavContext} from '@/context/FormNavContext';
-import {DndContext, PointerSensor, useSensor, useSensors} from '@dnd-kit/core';
-import {restrictToParentElement} from '@dnd-kit/modifiers';
+import {DndContext, DragStartEvent, PointerSensor, useSensor, useSensors} from '@dnd-kit/core';
+import {restrictToFirstScrollableAncestor} from '@dnd-kit/modifiers';
 import FormNavBarItem from '@/ui/FormNav/FormNavBarItem';
 import NavButtonSpacer from '@/ui/NavButton/NavButtonSpacer';
 import type {IFormPage} from '@/types/IFormPage';
@@ -14,8 +14,8 @@ export default function FormNavBar() {
 	const formNavContext = useContext(FormNavContext as Context<IFormNavContext>);
 	const formContext = useContext(FormContext as Context<IFormContext>);
 	const [isDragging, setIsDragging] = useState(false);
+	const [movingPageID, setMovingPageID] = useState<IFormPage['id'] | null>(null);
 	const pages = formContext.formPages ?? [];
-
 
 	// explicitly declare sensor with minimal movement distance to also allow click
 	const sensors = useSensors(
@@ -33,12 +33,20 @@ export default function FormNavBar() {
 		}
 	}, []);
 
-	const pageMove = useCallback((event: DragEndEvent) => {
+	const pageMoveStart = useCallback((event: DragStartEvent) => {
+		setIsDragging(true);
+		if (event?.active?.id) {
+			setMovingPageID(event.active.id.toString());
+		}
+	}, []);
+
+	const pageMoveEnd = useCallback((event: DragEndEvent) => {
 		if (event?.active?.id && event?.over?.id) {
 			const matches = RE_INSERT_AFTER.exec(event.over.id.toString());
 			if (matches) {
 				setIsDragging(false);
 				const movedID = event.active.id as string; // shortcut
+
 				/*
 				 * N.B.: We could get this page later, as the element removed
 				 * by splice, but before we splice, let's see if it's even
@@ -54,7 +62,17 @@ export default function FormNavBar() {
 
 				const moveIndex = formContext.getPageIndexByID(movedID);
 				const insertAfterID = matches[1]; // shortcut
-				const insertAfterIndex = formContext.getPageIndexByID(insertAfterID);
+				let insertAfterIndex = formContext.getPageIndexByID(insertAfterID);
+
+				// We have a drop on either side. Anything "before" needs an offset of +1.
+				if (insertAfterIndex < moveIndex) {
+					insertAfterIndex += 1;
+				}
+
+				// short-circuit if we're dropping in the same place
+				if (moveIndex === insertAfterIndex) {
+					return;
+				}
 
 				// Create a copy, since splice edits in place
 				const modifiedPages = JSON.parse(JSON.stringify(formContext.formPages));
@@ -75,25 +93,28 @@ export default function FormNavBar() {
 		}
 	}, []);
 
+	// include vertical padding to give more space for draggables
 	return (
-		<div className="flex justify-self-start max-w-8/10 overflow-x-auto pb-4">
+		<div className="flex justify-self-start max-w-8/10 overflow-x-auto py-4">
 			{/* use div to prevent crushing by flex */}
-			<div className="flex justify-self-start">
+			<div className="flex justify-self-start relative">
 				<DndContext
-					modifiers={[restrictToParentElement]}
-					onDragEnd={pageMove}
+					modifiers={[restrictToFirstScrollableAncestor]}
+					onDragStart={pageMoveStart}
+					onDragEnd={pageMoveEnd}
 					sensors={sensors}
 				>
 					{pages.map((formPage, index) => (
 						<React.Fragment key={formPage.id}>
 							<FormNavBarItem
 								formPage={formPage}
+								isDragging={isDragging && formPage.id === movingPageID}
 								isSelected={formPage?.id === formNavContext?.activeNavItemID}
 								onClick={(event) => pageSelect(event, formPage)}
 							/>
 							{
 								index < pages.length - 1 &&
-								<NavButtonSpacer afterPage={formPage} />
+								<NavButtonSpacer afterPage={formPage} movingPageID={movingPageID} />
 							}
 						</React.Fragment>
 					))}
@@ -109,6 +130,7 @@ export default function FormNavBar() {
 				<FormNavBarItem
 					className="active"
 					formPage={{id: '-1', name: 'Add page', icon: 'plus', editable: false}}
+					isDragging={false}
 					isSelected={false}
 					onClick={(event) => pageAdd(event, pages[pages.length - 2])}
 				/>
