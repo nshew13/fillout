@@ -63,19 +63,19 @@ export default function NavButtonMenu (props: TProps) {
 		event.stopPropagation();
 		formContext.deletePage(formPage);
 		handleMenuClose();
-	}, []);
+	}, [formContext.formPages]);
 
 	const actionDuplicate = useCallback((event: React.MouseEvent) => {
 		event.stopPropagation();
 		formContext.addPage(formPage, formPage);
 		handleMenuClose();
-	}, []);
+	}, [formContext.formPages]);
 
 	const actionRename = useCallback((event: React.MouseEvent) => {
 		event.stopPropagation();
 		setDialogIsOpen(true);
 		handleMenuClose();
-	}, []);
+	}, [formContext.formPages]);
 
 	const actionSetAsFirst = useCallback(() => {
 		const pageIndex = formContext.getPageIndexByID(formPage.id);
