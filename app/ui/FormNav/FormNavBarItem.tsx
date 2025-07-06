@@ -27,6 +27,7 @@ const NavButtonDefault = styled(Button)<ButtonProps>(({ theme }) => ({
 	padding: '0 10px',
 	width: 'min-content',
 	touchAction: 'none',
+	zIndex: '0',
 
 	'&:hover': {
 		backgroundColor: alpha(buttonDefaultBase, 0.35),
@@ -48,14 +49,13 @@ const NavButtonDefault = styled(Button)<ButtonProps>(({ theme }) => ({
 	},
 
 	'&.dragging': {
-		opacity: '0.7',
+		opacity: '0.9',
 		cursor: 'grab',
-		// put "under" other elements so NavButtonSpacer icons show on hover
-		zIndex: '-1',
+		zIndex: '100'
 	},
-
-	'&.dragging.not-editable': {
-		cursor: 'not-allowed',
+	'&.dragging.not-draggable': {
+		border: '3px solid red',
+		cursor: 'not-allowed'
 	},
 }));
 
@@ -95,8 +95,8 @@ export default function FormNavBarItem (props: TProps) {
 				'group' +
 				(isDragging ? ' dragging' : '') +
 				(isSelected ? ' active' : '') +
-				(className ? ' ' + className : '') +
-				(pageIsEditable ? '' : ' not-editable')
+				(className ? ` ${className}` : '') +
+				(pageIsEditable && isDragging ? '' : ' not-draggable')
 			}
 			startIcon={iconElement}
 			onClick={onClick}
